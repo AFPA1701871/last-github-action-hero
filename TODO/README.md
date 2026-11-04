@@ -36,6 +36,8 @@ jobs:
   # To be continued...
 ```
 
+![The plan](./git-assets/the-plan.gif)
+
 ### 2. Choix de l'équipement -> mise en place de l'environnement de build
 
 Lors de la déclaration d'un "job" et avant la déclaration il faut préciser son `runner`.
@@ -51,7 +53,45 @@ jobs:
       - # ...to be continued...
 ```
 
+Ce **runner** va être celui utilisé pour la partie **intégration continue**, il va donc effectuer les tests de l'application.
+
+Nous allons lui donner les responsabilités suivantes :
+1. récupération du code
+2. mise en place de l'environnemnt **NodeJS**
+3. vérification statique (**linter**)
+4. tests unitaires
+5. Création d'une version de production (le fameux "build de prod")
+
+La récupération de code sur un **runner** peut se faire en utilisation une première **EXTENSION BADASS DU MARKETPLACE, BOOM** : l'incroyablement utile [`actions/checkout`](https://github.com/marketplace/actions/checkout).
+
+Voici le code pour l'intéger :
+```yml
+      - uses: actions/checkout@v7 # récupération du code
+```
+
+> [!IMPORTANT]
+> Ajoutez ce code à l'endroit indiqué par `# TODO 2.1. Récupération de l'équipement`
+
 ![Gif "My favorite"](./git-assets/my-favorite.gif)
+
+Le projet est base sur **React Vanilla** en **JavaScript** avec `npm` comme gestionnaire de dépendances.
+
+Le **runner** doit donc être équipe du nécessaire pour manipuler ce genre de projet, pour se faire il est possible d'utiliser une autre **EXTENSION BADASS DU MARKETPLACE, BOOYA** (vous l'aurez compris, beaucoup de choses reposent sur des **EXTENSIONS BADASS DU MARKETPLACE, BAM**).
+
+Voici le code
+```yml
+      - uses: actions/setup-node@v7 # configuration de NodeJS
+        with:
+          node-version: 24 # sélection de la version
+          cache: npm
+      - run: npm ci # PREMIÈRE COMMANDE : installation des dépendances du projet sur le RUNNER
+```
+
+> [!IMPORTANT]
+> Ajoutez ce code à l'endroit indiqué par `# TODO 2.2 Préparation de l'équipe`
+
+
+Maintenant, les choses sérieuses peuvent commencer...
 
 ### 3. Die Hard, bienvenue à la fête camarade -> déclenche le linter
 
@@ -71,9 +111,12 @@ Dans le workflow Github, ajoutez à l'endroit indiqué l'étape suivante (bien f
     run: npm run lint
 ```
 
-La commande `run` d'une étape permet de déclencher un commande dans le `shell` du `runner` (la machine virtuelle Ubuntu).
+Commen énoncé précedemment, la commande `run` d'une étape permet de déclencher un commande dans le `shell` du `runner` (la machine virtuelle Ubuntu).
 
-Une fois l'étape ajoutée, étudiez le résumé du workflow pour corriger le code.
+> [!IMPORTANT]
+> Ajoutez l'étape à l'endroit indiqué par `# TODO 3. Die Hard : vérification statique`
+>
+> Une fois l'étape ajoutée, étudiez le résumé du workflow pour corriger le code.
 
 Vous pourrez accéder au résumé d'un workflow comme suit :
 
@@ -96,14 +139,14 @@ Vous pourrez accéder au résumé d'un workflow comme suit :
 
 ### 4. Terminator, "Sarah Connor?" -> casse un test
 
-Un test unitaire a été cassé et la plus brilliante des intelligences artificielles, "Governator", est là pour empêcher le workflow de progresser.
+Un test unitaire a été cassé et la plus brilliante des intelligences artificielles, "Claudiator", est là pour empêcher le workflow de progresser.
 
 Au besoin, les tests unitaires peuvent être lancés en local en utilisant la commande :
 ```sh
 npm test
 ```
 
-Dans le workflow Github, ajoutez à l'endroit indiqué l'étape suivante :
+Voici le code pour ajouter le lancement des tests unitaires :
 ```yml
   - id: test
     name: Terminator - Tests unitaires
@@ -112,11 +155,37 @@ Dans le workflow Github, ajoutez à l'endroit indiqué l'étape suivante :
 ```
 
 > [!IMPORTANT]
+> Ajoutez le code à l'endroit indiqué par `# TODO 4. Terminator : tests unitaires`.
+>
 > Avec l'aide du résumé d'erreur disponible sur Github, corrigez le code du fichier `src/lib.test.js`.
 
 ![Gif extrait Terminator 1 "Sarah Connor" ?](./git-assets/sarah-connor.gif)
 
-### 5. Résumé 1ère mission -> Github Markdown
+### 5. Commando, établissement du QG -> création du buile de production
+
+Seulement les étapes de `lint` et de `test` sont **OK** alors la tranpilation du projet peut commencer.
+
+Sur un environnement local la commande serait :
+```yml
+npm run build
+```
+
+Voici une ébauche de code à compléter :
+
+```yml
+      - id: build
+        name: Build
+        run: <TODO-ajouter-commande>
+        env:
+          VITE_COMMIT: ${{ github.sha }} # déclaration d'une variable d'environnement accessible au runner
+```
+
+> [!IMPORTANT]
+> Ajoutez le code à l'endroit indiqué par `# TODO 5. Commando : build`.
+>
+> Veillez à bien ajouter la commande qui convient.
+
+### 6. Résumé 1ère mission -> Github Markdown
 
 Il est possible d'ajouter des rapports qui seront intégrés aux résumé Github.
 
@@ -124,7 +193,7 @@ Il est possible d'ajouter des rapports qui seront intégrés aux résumé Github
 
 Ceci peut-être fait en écrivant du **Markdown** dans la variable `$GITHUB_STEP_SUMMARY` dans un `run` du runner.
 
-Dans le workflow Github, ajoutez à l'endroit indiqué l'étape suivante :
+Dans le workflow Github, voilà à quoi pourrait ressembler le code :
 
 ```yml
 - name: Rapport CI
@@ -133,7 +202,6 @@ Dans le workflow Github, ajoutez à l'endroit indiqué l'étape suivante :
     LINT: ${{ steps.lint.outcome }}
     TEST: ${{ steps.test.outcome }}
     BUILD: ${{ steps.build.outcome }}
-    ARTIFACT_UPLOAD: ${{ steps.artifact.outcome }}
   run: |
     {
       echo "## Rapport : CI"
@@ -143,7 +211,6 @@ Dans le workflow Github, ajoutez à l'endroit indiqué l'étape suivante :
       echo "| Vérification statique | $LINT |"
       echo "| Tests unitaires | $TEST |"
       echo "| Build | $BUILD |"
-      echo "| Upload artifact | $ARTIFACT_UPLOAD |"
       echo ""
       echo "_Réalisé par ${{ github.actor }} · commit \`${GITHUB_SHA::7}\`_"
     } >> "$GITHUB_STEP_SUMMARY"
@@ -153,6 +220,11 @@ Dans le workflow Github, ajoutez à l'endroit indiqué l'étape suivante :
 > Le pipe `|` permet de regrouper plusieurs lignes de `run` dans un même script.
 >
 > Les accolades `{}` indique que tout ce qui est affiché sur la sortie standard avec "écho" doit être redirigé dans la variable **$GITHUB_STEP_SUMMARY**.
+
+> [!IMPORTANT]
+> Ajoutez le code à l'endroit indiqué par `# TODO CI - 6. Résumé 1ère mission -> Github Markdown`
+>
+> Utilisez la vue de résumé du workflow, beau n'est-ce pas ?
 
 ---
 
@@ -164,10 +236,14 @@ Pour que le déploiement puisse se faire il faut veiller à activer les `Github 
 
 ![Activation Github pages](git-assets/activate-github-page.gif)
 
-Une fois l'activation effectuée il est possible d'utiliser l'action [`deploy-pages`](https://github.com/marketplace/actions/deploy-github-pages-site) en effectuant un téléchargement de `l'artefact` dispnible et créé par la première partie du workflow.
+Une fois l'activation effectuée il est possible d'utiliser l'action [`deploy-pages`](https://github.com/marketplace/actions/deploy-github-pages-site) en effectuant un téléchargement d'un `artefact` au préalablement construit.
 
-L'artifact est déposé par la première partie du workflow avec l'action [`upload-pages-artifact`](https://github.com/actions/upload-pages-artifact) :
+Pour le moment, nous n'avons pas d'artefact disponible, pas d'inquiétude une **GITHUB ACTION** est disponible.
+
+L'artefact peut être déposé par la première partie du workflow avec l'action [`upload-pages-artifact`](https://github.com/actions/upload-pages-artifact) :
 ```yml
+  # Le site construit est ajouté à un aterfact github-pages
+  # Plus d'informations sur les paramètres : https://github.com/actions/upload-pages-artifact#inputs-
   - id: artifact
     name: Création d'artefact
     uses: actions/upload-pages-artifact@v4
@@ -175,12 +251,18 @@ L'artifact est déposé par la première partie du workflow avec l'action [`uplo
       path: dist
 ```
 
+> [!IMPORTANT]
+> Ajoutez ce code **dans la partie CI juste après la compilation**, pas besoin de **rebuild** (le temps est compté pour sauver le monde des très-très-méchants).
+
 Si cette étape est bien ajoutée à la partie CI, vous pouvez ajouter l'étape de déploiement :
 ```yml
   - id: deployment # Déploiement automatique de l'artefact github-pages
     name: Rambo - déploiement derrière les lignes ennemies
     uses: actions/deploy-pages@v4
 ```
+
+> [!IMPORTANT]
+> Ajoutez le code à l'endroit indiqué par `# TODO CI - 6. Résumé 1ère mission -> Github Markdown`
 
 Un fois le déploiement effectué, vous savez ce qu'il vous reste à faire :
 
@@ -206,6 +288,9 @@ Comme pour le résumé **Markdown** de la partie CI, ajoutez un résumé tel que
         fi
       } >> "$GITHUB_STEP_SUMMARY"
 ```
+
+> [!IMPORTANT]
+> AJoutez le code à `TODO CD - 2. Résumé 2ème mission -> Github Markdown`
 
 ### 3. This is the end -> envoi d'email en fin de workflow
 
@@ -247,6 +332,20 @@ Il faudra ajouter 3 secrets utilisés par le workflow :
 - `MAIL_USERNAME` : nom de l'utilisateur utilisé pour l'envoi d'email
 - `MAIL_PASSWORD` : mot de passe utilisé pour l'envoi
 - `MAIL_TO` : adresse email du destinataire
+
+> [!TIP]
+> Il est possible de débugger les variables d'enrivonnement en ajoutant une étapes telle que :
+> ```yml
+>      # Étape uniquement présente pour vérifier le contenu des variables d'environnement
+>      - id: Debug
+>        name: Debug variables d'environnement
+>        run: |
+>          if [ -n "$MAIL_PASSWORD" ]; then
+>            echo "MAIL_PASSWORD : OK (non vide)"
+>          else
+>            echo "MAIL_PASSWORD : VIDE"
+>          fi
+> ```
 
 ![Gif multipass](./git-assets/multipass.gif)
 
