@@ -43,20 +43,20 @@ jobs:
       # TODO CI - 6. Résumé 1ère mission -> Github Markdown
 
   # Phase 2 - CD
-  cd:
-    needs: ci # Dépendance avec CI
-    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-26.04
-    permissions:
-      contents: read
-      pages: write # permet d'écrire pour déployer une "Github page"
-      id-token: write # permet de vérifier si le déploiement vient d'une source légitime
-    environment:
-      name: github-pages # récupération des variables d'environnement "github pages"
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      # TODO CD - 1. Rambo, derrière les lignes ennemies -> déploiement Github Page
+  # cd:
+  #   needs: ci # Dépendance avec CI
+  #   if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+  #   runs-on: ubuntu-26.04
+  #   permissions:
+  #     contents: read
+  #     pages: write # permet d'écrire pour déployer une "Github page"
+  #     id-token: write # permet de vérifier si le déploiement vient d'une source légitime
+  #   environment:
+  #     name: github-pages # récupération des variables d'environnement "github pages"
+  #     url: ${{ steps.deployment.outputs.page_url }}
+  #   steps:
+  #     # TODO CD - 1. Rambo, derrière les lignes ennemies -> déploiement Github Page
 
-      # TODO CD - 2. Résumé 2ème mission -> Github Markdown
+  #     # TODO CD - 2. Résumé 2ème mission -> Github Markdown
 
-      # TODO CD - 3. This is the end -> envoi d'email en fin de workflow
+  #     # TODO CD - 3. This is the end -> envoi d'email en fin de workflow
