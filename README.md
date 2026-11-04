@@ -4,12 +4,15 @@
 
 Atelier de découverte de GitHub Actions.
 
-
 Devenez le true **LAST GITHUB ACTION HERO!** Yippee kikay!
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/ludovic-esperce/last-github-action-hero/refs/heads/main/git-assets/awesome-action.gif" alt="Gif Awesome Action" />
 </p>
+
+## L'application à déployer
+
+![Gif application à déployer](./git-assets/site-example.gif)
 
 ## Le workflow
 
