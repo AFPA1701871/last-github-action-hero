@@ -24,6 +24,8 @@ html, body, .slidev-layout {
 
 .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
 .cols3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+
+
 .card {
   background: rgba(10, 20, 66, .85); border: 3px solid var(--sky);
   box-shadow: 6px 6px 0 var(--red); padding: .9rem 1.2rem; font-size: .95rem;
