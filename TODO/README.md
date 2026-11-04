@@ -3,6 +3,7 @@
 ## Marche à suivre
 
 Chaque ajout de code au workflow ou de modification du projet peut se faire de deux façons :
+
 - en modifiant le repo puis en faisant un `git push`
 - en éditant directement les fichiers sur `Github`
 
@@ -17,6 +18,7 @@ Vous pourrez prendre connaissance des "TODO" du workflow initialement fourni, il
 ### 1. Briefing -> mise en place du workflow
 
 Le code de mise en place du workflow est fourni, voici un descriptif de sa structuration :
+
 ```yml
 # Nom du workflow
 name: CI & CD (Bon cop, bad cop)
@@ -42,7 +44,8 @@ jobs:
 
 Lors de la déclaration d'un "job" et avant la déclaration il faut préciser son `runner`.
 
-Le `runner` est un conteneur fourni par Github, voici le code pour utiliser un conteneur `Ubuntu` en version `26.04` : 
+Le `runner` est un conteneur fourni par Github, voici le code pour utiliser un conteneur `Ubuntu` en version `26.04` :
+
 ```yml
 jobs:
   # Un JOB se déroule sur une machine spécifique
@@ -56,6 +59,7 @@ jobs:
 Ce **runner** va être celui utilisé pour la partie **intégration continue**, il va donc effectuer les tests de l'application.
 
 Nous allons lui donner les responsabilités suivantes :
+
 1. récupération du code
 2. mise en place de l'environnemnt **NodeJS**
 3. vérification statique (**linter**)
@@ -65,6 +69,7 @@ Nous allons lui donner les responsabilités suivantes :
 La récupération de code sur un **runner** peut se faire en utilisation une première **EXTENSION BADASS DU MARKETPLACE, BOOM** : l'incroyablement utile [`actions/checkout`](https://github.com/marketplace/actions/checkout).
 
 Voici le code pour l'intéger :
+
 ```yml
       - uses: actions/checkout@v7 # récupération du code
 ```
@@ -72,13 +77,14 @@ Voici le code pour l'intéger :
 > [!IMPORTANT]
 > Ajoutez ce code à l'endroit indiqué par `# TODO 2.1. Récupération de l'équipement`
 
-![Gif "My favorite"](./git-assets/my-favorite.gif)
+![Gif ](./git-assets/my-favorite.gif)
 
 Le projet est base sur **React Vanilla** en **JavaScript** avec `npm` comme gestionnaire de dépendances.
 
 Le **runner** doit donc être équipe du nécessaire pour manipuler ce genre de projet, pour se faire il est possible d'utiliser une autre **EXTENSION BADASS DU MARKETPLACE, BOOYA** (vous l'aurez compris, beaucoup de choses reposent sur des **EXTENSIONS BADASS DU MARKETPLACE, BAM**).
 
 Voici le code
+
 ```yml
       - uses: actions/setup-node@v7 # configuration de NodeJS
         with:
@@ -90,7 +96,6 @@ Voici le code
 > [!IMPORTANT]
 > Ajoutez ce code à l'endroit indiqué par `# TODO 2.2 Préparation de l'équipe`
 
-
 Maintenant, les choses sérieuses peuvent commencer...
 
 ### 3. Die Hard, bienvenue à la fête camarade -> déclenche le linter
@@ -100,11 +105,13 @@ La veille de Noël, tout semble calme... Tout ? C'est sans compter les variables
 Le workflow fait appel à un `linter` ou **analyseur statique de code** (capable de détecter les variables inutilisées, certaines erreurs de syntaxe, le non respect de certaines bonnes pratiques ou conventions de nommage).
 
 Au besoin, l'analyseur peut-être appelé avec la commande :
+
 ```sh
 npm run lint
 ```
 
 Dans le workflow Github, ajoutez à l'endroit indiqué l'étape suivante (bien faire attention à l'indentation) :
+
 ```yml
   - id: lint
     name: Die Hard - Vérification statique - Lint
@@ -130,6 +137,7 @@ Vous pourrez accéder au résumé d'un workflow comme suit :
 > Si aucun `if:` est explicitement indiqué le workflow se comporte comme si il y avait `if: success()`
 >
 > Explicitement, cette étape de `lint` serait :
+>
 > ```yml
 >  - id: lint
 >    if: success() 
@@ -142,11 +150,13 @@ Vous pourrez accéder au résumé d'un workflow comme suit :
 Un test unitaire a été cassé et la plus brilliante des intelligences artificielles, "Claudiator", est là pour empêcher le workflow de progresser.
 
 Au besoin, les tests unitaires peuvent être lancés en local en utilisant la commande :
+
 ```sh
 npm test
 ```
 
 Voici le code pour ajouter le lancement des tests unitaires :
+
 ```yml
   - id: test
     name: Terminator - Tests unitaires
@@ -159,13 +169,14 @@ Voici le code pour ajouter le lancement des tests unitaires :
 >
 > Avec l'aide du résumé d'erreur disponible sur Github, corrigez le code du fichier `src/lib.test.js`.
 
-![Gif extrait Terminator 1 "Sarah Connor" ?](./git-assets/sarah-connor.gif)
+![Gif extrait Terminator 1 ](./git-assets/sarah-connor.gif)
 
 ### 5. Commando, établissement du QG -> création du buile de production
 
 Seulement les étapes de `lint` et de `test` sont **OK** alors la tranpilation du projet peut commencer.
 
 Sur un environnement local la commande serait :
+
 ```yml
 npm run build
 ```
@@ -241,6 +252,7 @@ Une fois l'activation effectuée il est possible d'utiliser l'action [`deploy-pa
 Pour le moment, nous n'avons pas d'artefact disponible, pas d'inquiétude une **GITHUB ACTION** est disponible.
 
 L'artefact peut être déposé par la première partie du workflow avec l'action [`upload-pages-artifact`](https://github.com/actions/upload-pages-artifact) :
+
 ```yml
   # Le site construit est ajouté à un aterfact github-pages
   # Plus d'informations sur les paramètres : https://github.com/actions/upload-pages-artifact#inputs-
@@ -255,6 +267,7 @@ L'artefact peut être déposé par la première partie du workflow avec l'action
 > Ajoutez ce code **dans la partie CI juste après la compilation**, pas besoin de **rebuild** (le temps est compté pour sauver le monde des très-très-méchants).
 
 Si cette étape est bien ajoutée à la partie CI, vous pouvez ajouter l'étape de déploiement :
+
 ```yml
   - id: deployment # Déploiement automatique de l'artefact github-pages
     name: Rambo - déploiement derrière les lignes ennemies
@@ -271,6 +284,7 @@ Un fois le déploiement effectué, vous savez ce qu'il vous reste à faire :
 ### 2. Résumé 2ème mission -> Github Markdown
 
 Comme pour le résumé **Markdown** de la partie CI, ajoutez un résumé tel que :
+
 ```yml
   - name: Résumé Github pour CD
     if: always()
@@ -329,12 +343,14 @@ Afin que l'action Github puisse se connecter au serveur il faudra ajouter des `s
 ![Ajout de secrets Github](git-assets/add-github-repository-secret.gif)
 
 Il faudra ajouter 3 secrets utilisés par le workflow :
+
 - `MAIL_USERNAME` : nom de l'utilisateur utilisé pour l'envoi d'email
 - `MAIL_PASSWORD` : mot de passe utilisé pour l'envoi
 - `MAIL_TO` : adresse email du destinataire
 
 > [!TIP]
 > Il est possible de débugger les variables d'enrivonnement en ajoutant une étapes telle que :
+>
 > ```yml
 >      # Étape uniquement présente pour vérifier le contenu des variables d'environnement
 >      - id: Debug
@@ -351,7 +367,7 @@ Il faudra ajouter 3 secrets utilisés par le workflow :
 
 ### 4. Décoration pour service rendu : badge Github
 
-Github génère automatiquement un [badge d'état de flux de travail](https://docs.github.com/fr/actions/how-tos/monitor-workflows/add-a-status-badge) utilisable.
+Github génère automatiquement un [badge d&#39;état de flux de travail](https://docs.github.com/fr/actions/how-tos/monitor-workflows/add-a-status-badge) utilisable.
 
 Il est possible d'ajouter le code de ce badge d'état à votre `README.md` de dépôt.
 rambo mission accomplished
