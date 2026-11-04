@@ -36,6 +36,9 @@ class: text-center
   </div>
 </div>
 
+
+<img src="/lets-party.gif" class="logo" alt="Let's party" />
+
 ---
 
 # Anatomie d'un workflow
@@ -51,7 +54,7 @@ class: text-center
 </div>
 <div class="needs">needs<br/>▶</div>
   <div class="job">
-    <div class="job-title">JOB "cd" <small>une autre scène, un autre plateau</small>
+    <div class="job-title">JOB "cd" <small>une autre scène, un autre runner</small>
   </div>
   <div class="steps">
     <div class="step">STEP<small>déployer</small>
@@ -67,7 +70,7 @@ class: text-center
 
 # Le runner
 
-<div class="cols2">
+<div class="cols3">
     <div class="card">
         <h3>Quel type ?</h3>
         <p><b>Hébergé par GitHub</b> : Linux, Windows ou macOS, nouveau conteneur à chaque job.</p>
@@ -81,8 +84,11 @@ class: text-center
         <p><code>ubuntu-26.04</code> fixe la version</p>
         <p class="ex">runs-on: ubuntu-26.04</p>
     </div>
+    <!-- <div class="card"> -->
+    <!-- </div> -->
 </div>
 
+<img style="width: 400px;" src="/running-man.gif" class="logo" alt="Running man" />
 ---
 
 # Un workflow
@@ -92,12 +98,13 @@ name: Mon premier workflow       # le titre du workflow
 on: push                         # Action ! : le déclencheur
 jobs:
   test_the_code:                 # une scène (un job)
-    runs-on: ubuntu-latest       # le plateau : une machine fournie par GitHub
+    runs-on: ubuntu-latest       # le runner : une machine fournie par GitHub
     steps:
       - uses: actions/checkout@v4   # une action toute faite
       - run: npm test               # une commande
 ```
 
+<img style="width: 300px; height: auto;" src="/the-plan.gif" class="logo" alt="The plan" />
 ---
 
 # Deux types d'étapes : run et uses
@@ -156,13 +163,15 @@ jobs:
 # CI / CD : bon cop / bad cop
 
 <div class="flow">
-  <div class="stage"><b>Push</b><small>« Action ! »</small></div>
+  <div class="stage"><b>Push</b><small>Action !</small></div>
   <span>▶</span>
-  <div class="stage"><b>Die Hard</b><small>Lint</small></div>
+  <div class="stage"><b>Checkout</b><small>Récupération de code</small></div>
   <span>▶</span>
-  <div class="stage"><b>Terminator</b><small>Tests</small></div>
+  <div class="stage"><b>Die Hard</b><small>Linter</small></div>
   <span>▶</span>
-  <div class="stage"><b>Commando</b><small>Build</small></div>
+  <div class="stage"><b>Terminator</b><small>Tests unitaires</small></div>
+  <span>▶</span>
+  <div class="stage"><b>Commando</b><small>Build de production</small></div>
   <span>▶</span>
   <div class="stage"><b>Rambo</b><small>Déploiement</small></div>
 </div>
@@ -171,6 +180,8 @@ jobs:
 <div><b>CI</b> : intégration continue<br/>on vérifie le code à chaque modification</div>
 <div><b>CD</b> : livraison continue<br/>on publie automatiquement si tout est OK</div>
 </div>
+
+<img style="width: 300px; height: auto;" src="/badboys.gif" class="logo" alt="The plan" />
 
 ---
 layout: center
@@ -185,3 +196,5 @@ class: text-center
   <div><b>3</b>Compléter la partie CD</div>
   <div><b>4</b>Devenir le véritable Last Github Action hero</div>
 </div>
+
+<img style="width: 400px;" src="/prepare.gif" class="logo" alt="Preparation" />
